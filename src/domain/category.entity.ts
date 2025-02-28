@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID } from "node:crypto";
 
 export type CategoryConstructorProps = {
   category_id?: string;
@@ -6,13 +6,13 @@ export type CategoryConstructorProps = {
   description?: string | null;
   is_active?: boolean;
   created_at?: Date;
-}
+};
 
 export type CreateCategoryCommand = {
   name: string;
   description?: string | null;
   is_active?: boolean;
-}
+};
 
 export class Category {
   category_id: string;
@@ -31,5 +31,31 @@ export class Category {
 
   static create(props: CreateCategoryCommand) {
     return new Category(props);
+  }
+
+  changeName(name: string): void {
+    this.name = name;
+  }
+
+  changeDescription(description: string): void {
+    this.description = description;
+  }
+
+  activate(): void {
+    this.is_active = true;
+  }
+
+  deactivate(): void {
+    this.is_active = false;
+  }
+
+  toJSON() {
+    return {
+      category_id: this.category_id,
+      name: this.name,
+      description: this.description,
+      is_active: this.is_active,
+      created_at: this.created_at,
+    };
   }
 }
