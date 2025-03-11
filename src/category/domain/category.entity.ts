@@ -1,5 +1,5 @@
-import { randomUUID } from "node:crypto";
 import { UUID } from "../../shared/domain/value-object/uuid.vo";
+import { CategoryValidatorFactory } from "./category.validator";
 
 export type CategoryConstructorProps = {
   category_id?: UUID;
@@ -48,6 +48,11 @@ export class Category {
 
   deactivate(): void {
     this.is_active = false;
+  }
+
+  static validate(entity: Category) {
+    const validator = CategoryValidatorFactory.create();
+    return validator.validate(entity);
   }
 
   toJSON() {
