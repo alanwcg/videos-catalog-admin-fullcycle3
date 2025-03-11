@@ -1,3 +1,4 @@
+import { UUID } from "../../../shared/domain/value-object/uuid.vo";
 import { Category } from "../category.entity";
 
 describe("Category Entity Unit Tests", () => {
@@ -7,7 +8,7 @@ describe("Category Entity Unit Tests", () => {
         name: "Movie",
       });
 
-      expect(category.category_id).toBeDefined();
+      expect(category.category_id).toBeInstanceOf(UUID);
       expect(category.name).toBe("Movie");
       expect(category.description).toBeNull();
       expect(category.is_active).toBeTruthy();
@@ -22,7 +23,7 @@ describe("Category Entity Unit Tests", () => {
         created_at,
       });
 
-      expect(category.category_id).toBeDefined();
+      expect(category.category_id).toBeInstanceOf(UUID);
       expect(category.name).toBe("Movie");
       expect(category.description).toBe("Movie description");
       expect(category.is_active).toBeFalsy();
@@ -34,7 +35,7 @@ describe("Category Entity Unit Tests", () => {
         description: "Movie description",
       });
 
-      expect(category.category_id).toBeDefined();
+      expect(category.category_id).toBeInstanceOf(UUID);
       expect(category.name).toBe("Movie");
       expect(category.description).toBe("Movie description");
       expect(category.is_active).toBeTruthy();
@@ -48,7 +49,7 @@ describe("Category Entity Unit Tests", () => {
         name: "Movie",
       });
 
-      expect(category.category_id).toBeDefined();
+      expect(category.category_id).toBeInstanceOf(UUID);
       expect(category.name).toBe("Movie");
       expect(category.description).toBeNull();
       expect(category.is_active).toBe(true);
@@ -61,7 +62,7 @@ describe("Category Entity Unit Tests", () => {
         description: "some description",
       });
 
-      expect(category.category_id).toBeDefined();
+      expect(category.category_id).toBeInstanceOf(UUID);
       expect(category.name).toBe("Movie");
       expect(category.description).toBe("some description");
       expect(category.is_active).toBe(true);
@@ -74,53 +75,73 @@ describe("Category Entity Unit Tests", () => {
         is_active: false,
       });
 
-      expect(category.category_id).toBeDefined();
+      expect(category.category_id).toBeInstanceOf(UUID);
       expect(category.name).toBe("Movie");
       expect(category.description).toBeNull();
       expect(category.is_active).toBe(false);
       expect(category.created_at).toBeInstanceOf(Date);
     });
+  });
 
-    it("should change name", () => {
+  describe("category_id field", () => {
+    const arrange = [
+      { category_id: null },
+      { category_id: undefined },
+      { category_id: new UUID() },
+    ];
+
+    test.each(arrange)("id = %j", ({ category_id }) => {
       const category = new Category({
+        category_id: category_id as any,
         name: "Movie",
       });
+      expect(category.category_id).toBeInstanceOf(UUID);
+      if (category_id instanceof UUID) {
+        expect(category.category_id.equals(category_id)).toBe(true);
+        expect(category.category_id.value).toBe(category_id.value);
+      }
+    });
+  });
 
-      category.changeName("other name");
-
-      expect(category.name).toBe("other name");
+  it("should change name", () => {
+    const category = new Category({
+      name: "Movie",
     });
 
-    it("should change description", () => {
-      const category = new Category({
-        name: "Movie",
-      });
+    category.changeName("other name");
 
-      category.changeDescription("some description");
+    expect(category.name).toBe("other name");
+  });
 
-      expect(category.description).toBe("some description");
+  it("should change description", () => {
+    const category = new Category({
+      name: "Movie",
     });
 
-    it("should activate a category", () => {
-      const category = new Category({
-        name: "Movie",
-        is_active: false,
-      });
+    category.changeDescription("some description");
 
-      category.activate();
+    expect(category.description).toBe("some description");
+  });
 
-      expect(category.is_active).toBe(true);
+  it("should activate a category", () => {
+    const category = new Category({
+      name: "Movie",
+      is_active: false,
     });
 
-    it("should deactivate a category", () => {
-      const category = new Category({
-        name: "Movie",
-        is_active: true,
-      });
+    category.activate();
 
-      category.deactivate();
+    expect(category.is_active).toBe(true);
+  });
 
-      expect(category.is_active).toBe(false);
+  it("should deactivate a category", () => {
+    const category = new Category({
+      name: "Movie",
+      is_active: true,
     });
+
+    category.deactivate();
+
+    expect(category.is_active).toBe(false);
   });
 });
