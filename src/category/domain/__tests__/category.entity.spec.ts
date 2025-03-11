@@ -1,3 +1,4 @@
+import { EntityValidationError } from "../../../shared/domain/validators/validation.error";
 import { UUID } from "../../../shared/domain/value-object/uuid.vo";
 import { Category } from "../category.entity";
 
@@ -153,5 +154,21 @@ describe("Category Entity Unit Tests", () => {
     category.deactivate();
 
     expect(category.is_active).toBe(false);
+  });
+});
+
+describe("Category Validator Tests", () => {
+  describe("create command", () => {
+    it("should throw EntityValidationError with invalid name", () => {
+      expect(() => {
+        Category.create({
+          name: "",
+        });
+      }).toThrow(
+        new EntityValidationError({
+          name: ["name should not be empty"],
+        })
+      );
+    });
   });
 });

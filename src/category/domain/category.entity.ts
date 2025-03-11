@@ -1,3 +1,4 @@
+import { EntityValidationError } from "../../shared/domain/validators/validation.error";
 import { UUID } from "../../shared/domain/value-object/uuid.vo";
 import { CategoryValidatorFactory } from "./category.validator";
 
@@ -30,7 +31,7 @@ export class Category {
     this.created_at = props.created_at ?? new Date();
   }
 
-  static create(props: CreateCategoryCommand) {
+  static create(props: CreateCategoryCommand): Category {
     const category = new Category(props);
     Category.validate(category);
     return category;
@@ -54,9 +55,13 @@ export class Category {
     this.is_active = false;
   }
 
-  static validate(entity: Category) {
+  static validate(entity: Category): void {
     const validator = CategoryValidatorFactory.create();
-    return validator.validate(entity);
+    const isValid = validator.validate(entity);
+    console.log(validator);
+    if (!isValid) {
+      throw new EntityValidationError(validator.errors);
+    }
   }
 
   toJSON() {

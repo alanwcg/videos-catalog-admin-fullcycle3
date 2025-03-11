@@ -28,13 +28,13 @@ export class CategoryRules {
 }
 
 export class CategoryValidator extends ClassValidatorFields<CategoryRules> {
-  validate(entity: Category) {
+  validate(entity: Category): boolean {
     return super.validate(new CategoryRules(entity));
   }
 }
 
 export class CategoryValidatorFactory {
-  static create() {
+  static create(): CategoryValidator {
     return new CategoryValidator();
   }
 }
