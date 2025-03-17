@@ -1,4 +1,5 @@
 import { Entity } from "../../domain/entity";
+import { EntityNotFoundError } from "../../domain/errors/entity-not-found.error";
 import { IRepository } from "../../domain/repository/repository-interface";
 import { ValueObject } from "../../domain/value-object";
 
@@ -22,7 +23,7 @@ export abstract class InMemoryRepository<
       item.entity_id.equals(entity.entity_id)
     );
     if (index === -1) {
-      throw new Error("Entity not found.");
+      throw new EntityNotFoundError(entity.entity_id, this.getEntity());
     }
     this.items[index] = entity;
   }
@@ -32,7 +33,7 @@ export abstract class InMemoryRepository<
       item.entity_id.equals(entity_id)
     );
     if (index === -1) {
-      throw new Error("Entity not found.");
+      throw new EntityNotFoundError(entity_id, this.getEntity());
     }
     this.items.splice(index, 1);
   }

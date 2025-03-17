@@ -16,6 +16,10 @@ export class UUID extends ValueObject {
       throw new InvalidUUIDError();
     }
   }
+
+  toString() {
+    return this.value;
+  }
 }
 
 export class InvalidUUIDError extends Error {
