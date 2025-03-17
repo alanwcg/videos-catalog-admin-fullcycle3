@@ -61,7 +61,6 @@ export class Category extends Entity {
   static validate(entity: Category): void {
     const validator = CategoryValidatorFactory.create();
     const isValid = validator.validate(entity);
-    console.log(validator);
     if (!isValid) {
       throw new EntityValidationError(validator.errors);
     }
