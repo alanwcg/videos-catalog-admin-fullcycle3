@@ -55,18 +55,18 @@ export abstract class InMemoryRepository<
   abstract getEntity(): new (...args: any[]) => E;
 }
 
-type ApplyFilterParams<E, Filter> = {
+export type ApplyFilterParams<E, Filter> = {
   items: E[];
   filter: Filter | null;
 };
 
-type ApplyPaginationParams<E> = {
+export type ApplyPaginationParams<E> = {
   items: E[];
   page: SearchParams["page"];
   per_page: SearchParams["per_page"];
 };
 
-type ApplySortParams<E> = {
+export type ApplySortParams<E> = {
   items: E[];
   sort: SearchParams["sort"];
   sort_dir: SearchParams["sort_dir"];
