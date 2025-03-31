@@ -83,7 +83,7 @@ export class FakeCategoryBuilder {
         });
         return category;
       });
-    return this.objsCount === 1 ? categories[0] : categories;
+    return this.objsCount === 1 ? (categories[0] as any) : categories;
   }
 
   private callFactory(valueOrFactory: ValueOrFactory<any>, index: number) {
