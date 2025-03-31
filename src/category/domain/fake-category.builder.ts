@@ -5,7 +5,7 @@ import _ from "lodash";
 
 type ValueOrFactory<T> = T | ((index: number) => T);
 
-export class FakeCategoryBuilder {
+export class FakeCategoryBuilder<TBuild> {
   // auto generated in entity
   private _category_id: ValueOrFactory<UUID> | undefined = undefined;
   private _name: ValueOrFactory<string> = (_index) => this.chance.word();
@@ -24,11 +24,11 @@ export class FakeCategoryBuilder {
   }
 
   static category() {
-    return new FakeCategoryBuilder();
+    return new FakeCategoryBuilder<Category>();
   }
 
   static categories(objsCount: number) {
-    return new FakeCategoryBuilder(objsCount);
+    return new FakeCategoryBuilder<Category[]>(objsCount);
   }
 
   withUUID(valueOrFactory: ValueOrFactory<UUID>) {
@@ -66,7 +66,7 @@ export class FakeCategoryBuilder {
     return this;
   }
 
-  build(): Category | Category[] {
+  build(): TBuild {
     const categories = new Array(this.objsCount)
       .fill(undefined)
       .map((_, index) => {
@@ -83,7 +83,7 @@ export class FakeCategoryBuilder {
         });
         return category;
       });
-    return this.objsCount === 1 ? (categories[0] as any) : categories;
+    return (this.objsCount === 1 ? categories[0] : categories) as TBuild;
   }
 
   private callFactory(valueOrFactory: ValueOrFactory<any>, index: number) {

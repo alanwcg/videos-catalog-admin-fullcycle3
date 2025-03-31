@@ -1,15 +1,16 @@
-import { Category } from "../../domain/category.entity";
-import { CategoryInMemoryRepository } from "./category-in-memory.repository";
+import { FakeCategoryBuilder } from "../../domain/fake-category.builder";
+import { InMemoryCategoryRepository } from "./in-memory-category.repository";
 
-describe("CategoryInMemoryRepository Unit Tests", () => {
-  let repo: CategoryInMemoryRepository;
+describe("InMemoryCategoryRepository Unit Tests", () => {
+  let repo: InMemoryCategoryRepository;
 
   beforeEach(() => {
-    repo = new CategoryInMemoryRepository();
+    repo = new InMemoryCategoryRepository();
   });
 
   it("should not filter items when filter param is null", async () => {
-    const items = [Category.create({ name: "test " })];
+    // const items = [Category.create({ name: "test " })];
+    const items = [FakeCategoryBuilder.category().build()];
     const filterMethodSpy = jest.spyOn(items, "filter");
 
     const filteredItems = await repo["applyFilter"]({ items, filter: null });
@@ -19,9 +20,9 @@ describe("CategoryInMemoryRepository Unit Tests", () => {
 
   it("should filter items using filter param", async () => {
     const items = [
-      new Category({ name: "test" }),
-      new Category({ name: "TEST" }),
-      new Category({ name: "fake" }),
+      FakeCategoryBuilder.category().withName("test").build(),
+      FakeCategoryBuilder.category().withName("TEST").build(),
+      FakeCategoryBuilder.category().withName("fake").build(),
     ];
     const filterMethodSpy = jest.spyOn(items, "filter");
 
@@ -34,15 +35,18 @@ describe("CategoryInMemoryRepository Unit Tests", () => {
     const created_at = new Date();
 
     const items = [
-      new Category({ name: "test", created_at }),
-      new Category({
-        name: "TEST",
-        created_at: new Date(created_at.getTime() + 100),
-      }),
-      new Category({
-        name: "test",
-        created_at: new Date(created_at.getTime() + 200),
-      }),
+      FakeCategoryBuilder.category()
+        .withName("test")
+        .withCreatedAt(created_at)
+        .build(),
+      FakeCategoryBuilder.category()
+        .withName("TEST")
+        .withCreatedAt(new Date(created_at.getTime() + 100))
+        .build(),
+      FakeCategoryBuilder.category()
+        .withName("test")
+        .withCreatedAt(new Date(created_at.getTime() + 200))
+        .build(),
     ];
 
     const sortedItems = repo["applySort"]({
@@ -55,9 +59,9 @@ describe("CategoryInMemoryRepository Unit Tests", () => {
 
   it("should sort by name", async () => {
     const items = [
-      Category.create({ name: "c" }),
-      Category.create({ name: "b" }),
-      Category.create({ name: "a" }),
+      FakeCategoryBuilder.category().withName("c").build(),
+      FakeCategoryBuilder.category().withName("b").build(),
+      FakeCategoryBuilder.category().withName("a").build(),
     ];
 
     let sortedItems = repo["applySort"]({

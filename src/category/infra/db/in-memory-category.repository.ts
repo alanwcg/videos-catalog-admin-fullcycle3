@@ -6,7 +6,7 @@ import {
 } from "../../../shared/infra/db/in-memory/in-memory.repository";
 import { Category } from "../../domain/category.entity";
 
-export class CategoryInMemoryRepository extends InMemorySearchableRepository<
+export class InMemoryCategoryRepository extends InMemorySearchableRepository<
   Category,
   UUID
 > {
