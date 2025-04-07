@@ -1,9 +1,12 @@
-import { Entity } from "../../../../shared/domain/entity";
-import { SearchParams } from "../../../../shared/domain/repository/search-params";
-import { SearchResult } from "../../../../shared/domain/repository/search-result";
+import { Op } from "sequelize";
+import { EntityNotFoundError } from "../../../../shared/domain/errors/entity-not-found.error";
 import { UUID } from "../../../../shared/domain/value-object/uuid.vo";
 import { Category } from "../../../domain/category.entity";
-import { ICategoryRepository } from "../../../domain/category.repository";
+import {
+  CategorySearchParams,
+  CategorySearchResult,
+  ICategoryRepository,
+} from "../../../domain/category.repository";
 import { CategoryModel } from "./category.model";
 
 export class SequelizeCategoryRepository implements ICategoryRepository {
@@ -34,11 +37,25 @@ export class SequelizeCategoryRepository implements ICategoryRepository {
   }
 
   async update(entity: Category): Promise<void> {
-    throw new Error("Method not implemented.");
+    const id = entity.category_id;
+    await this._checkById(id);
+    await this.categoryModel.update(
+      {
+        category_id: id.value,
+        name: entity.name,
+        description: entity.description,
+        is_active: entity.is_active,
+        created_at: entity.created_at,
+      },
+      { where: { category_id: id.value } }
+    );
   }
 
   async delete(entity_id: UUID): Promise<void> {
-    throw new Error("Method not implemented.");
+    await this._checkById(entity_id);
+    await this.categoryModel.destroy({
+      where: { category_id: entity_id.value },
+    });
   }
 
   async findById(entity_id: UUID): Promise<Category> {
@@ -66,8 +83,45 @@ export class SequelizeCategoryRepository implements ICategoryRepository {
     );
   }
 
-  async search(input: SearchParams<string>): Promise<SearchResult<Entity>> {
-    throw new Error("Method not implemented.");
+  async search(params: CategorySearchParams): Promise<CategorySearchResult> {
+    const offset = (params.page - 1) * params.per_page;
+    const limit = params.per_page;
+    const { rows: models, count } = await this.categoryModel.findAndCountAll({
+      ...(params.filter && {
+        where: {
+          name: {
+            [Op.like]: `%${params.filter}%`,
+          },
+        },
+      }),
+      ...(params.sort && this.sortableFields.includes(params.sort)
+        ? { order: [[params.sort, params.sort_dir]] }
+        : { order: [["created_at", "desc"]] }),
+      offset,
+      limit,
+    });
+    return new CategorySearchResult({
+      items: models.map(
+        (model) =>
+          new Category({
+            category_id: new UUID(model.category_id),
+            name: model.name,
+            description: model.description,
+            is_active: model.is_active,
+            created_at: model.created_at,
+          })
+      ),
+      current_page: params.page,
+      per_page: params.per_page,
+      total: count,
+    });
+  }
+
+  private async _checkById(id: UUID) {
+    const model = await this.categoryModel.findByPk(id.value);
+    if (!model) {
+      throw new EntityNotFoundError(id, this.getEntity());
+    }
   }
 
   getEntity(): new (...args: any[]) => Category {

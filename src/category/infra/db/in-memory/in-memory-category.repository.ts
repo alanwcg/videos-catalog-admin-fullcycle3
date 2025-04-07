@@ -5,15 +5,19 @@ import {
   InMemorySearchableRepository,
 } from "../../../../shared/infra/db/in-memory/in-memory.repository";
 import { Category } from "../../../domain/category.entity";
+import {
+  CategoryFilter,
+  ICategoryRepository,
+} from "../../../domain/category.repository";
 
-export class InMemoryCategoryRepository extends InMemorySearchableRepository<
-  Category,
-  UUID
-> {
+export class InMemoryCategoryRepository
+  extends InMemorySearchableRepository<Category, UUID>
+  implements ICategoryRepository
+{
   sortableFields: string[] = ["name", "created_at"];
 
   protected async applyFilter(
-    params: ApplyFilterParams<Category, string>
+    params: ApplyFilterParams<Category, CategoryFilter>
   ): Promise<Category[]> {
     const { items, filter } = params;
 
