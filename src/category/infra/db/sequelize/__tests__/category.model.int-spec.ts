@@ -1,6 +1,6 @@
 import { DataType, Sequelize } from "sequelize-typescript";
-import { CategoryModel } from "./category.model";
-import { FakeCategoryBuilder } from "../../../domain/fake-category.builder";
+import { CategoryModel } from "../category.model";
+import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
 
 describe("CategoryModel Integration Tests", () => {
   let sequelize: Sequelize;

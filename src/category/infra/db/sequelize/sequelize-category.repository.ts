@@ -60,6 +60,9 @@ export class SequelizeCategoryRepository implements ICategoryRepository {
 
   async findById(entity_id: UUID): Promise<Category> {
     const model = await this.categoryModel.findByPk(entity_id.value);
+    if (!model) {
+      return null;
+    }
     return new Category({
       category_id: new UUID(model.category_id),
       name: model.name,
