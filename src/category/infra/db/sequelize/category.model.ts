@@ -15,7 +15,7 @@ export class CategoryModel extends Model {
   @Column({ type: DataType.STRING(255), allowNull: false })
   declare name: string;
 
-  @Column({ type: DataType.TEXT })
+  @Column({ type: DataType.TEXT, allowNull: true })
   declare description: string | null;
 
   @Column({ type: DataType.BOOLEAN, allowNull: false })
