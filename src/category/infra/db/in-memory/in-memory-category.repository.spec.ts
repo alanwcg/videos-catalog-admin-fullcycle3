@@ -1,4 +1,4 @@
-import { FakeCategoryBuilder } from "../../domain/fake-category.builder";
+import { FakeCategoryBuilder } from "../../../domain/fake-category.builder";
 import { InMemoryCategoryRepository } from "./in-memory-category.repository";
 
 describe("InMemoryCategoryRepository Unit Tests", () => {
@@ -9,7 +9,6 @@ describe("InMemoryCategoryRepository Unit Tests", () => {
   });
 
   it("should not filter items when filter param is null", async () => {
-    // const items = [Category.create({ name: "test " })];
     const items = [FakeCategoryBuilder.category().build()];
     const filterMethodSpy = jest.spyOn(items, "filter");
 

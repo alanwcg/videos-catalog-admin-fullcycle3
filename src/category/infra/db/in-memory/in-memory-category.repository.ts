@@ -1,10 +1,10 @@
-import { UUID } from "../../../shared/domain/value-object/uuid.vo";
+import { UUID } from "../../../../shared/domain/value-object/uuid.vo";
 import {
   ApplyFilterParams,
   ApplySortParams,
   InMemorySearchableRepository,
-} from "../../../shared/infra/db/in-memory/in-memory.repository";
-import { Category } from "../../domain/category.entity";
+} from "../../../../shared/infra/db/in-memory/in-memory.repository";
+import { Category } from "../../../domain/category.entity";
 
 export class InMemoryCategoryRepository extends InMemorySearchableRepository<
   Category,
