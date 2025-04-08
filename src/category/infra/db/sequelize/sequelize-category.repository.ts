@@ -16,13 +16,13 @@ export class SequelizeCategoryRepository implements ICategoryRepository {
   constructor(private readonly categoryModel: typeof CategoryModel) {}
 
   async insert(entity: Category): Promise<void> {
-    const model = CategoryModelMapper.toModel(entity).dataValues;
-    await this.categoryModel.create(model);
+    const model = CategoryModelMapper.toModel(entity);
+    await this.categoryModel.create(model.toJSON());
   }
 
   async bulkInsert(entities: Category[]): Promise<void> {
-    const models = entities.map(
-      (entity) => CategoryModelMapper.toModel(entity).dataValues
+    const models = entities.map((entity) =>
+      CategoryModelMapper.toModel(entity).toJSON()
     );
     await this.categoryModel.bulkCreate(models);
   }
@@ -71,16 +71,7 @@ export class SequelizeCategoryRepository implements ICategoryRepository {
       limit,
     });
     return new CategorySearchResult({
-      items: models.map(
-        (model) =>
-          new Category({
-            category_id: new UUID(model.category_id),
-            name: model.name,
-            description: model.description,
-            is_active: model.is_active,
-            created_at: model.created_at,
-          })
-      ),
+      items: models.map((model) => CategoryModelMapper.toEntity(model)),
       current_page: params.page,
       per_page: params.per_page,
       total: count,
