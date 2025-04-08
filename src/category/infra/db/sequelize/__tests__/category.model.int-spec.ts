@@ -1,19 +1,10 @@
 import { DataType, Sequelize } from "sequelize-typescript";
 import { CategoryModel } from "../category.model";
 import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
+import { setupSequelize } from "../../../../../shared/infra/testing/setup-sequelize.helper";
 
 describe("CategoryModel Integration Tests", () => {
-  let sequelize: Sequelize;
-
-  beforeEach(async () => {
-    const sequelize = new Sequelize({
-      dialect: "sqlite",
-      storage: ":memory:",
-      models: [CategoryModel],
-      logging: false,
-    });
-    await sequelize.sync({ force: true });
-  });
+  setupSequelize({ models: [CategoryModel] });
 
   test("mapping props", () => {
     const propsMap = CategoryModel.getAttributes();
