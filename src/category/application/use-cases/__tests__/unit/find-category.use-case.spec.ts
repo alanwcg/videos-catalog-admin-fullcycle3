@@ -1,11 +1,11 @@
-import { EntityNotFoundError } from "../../../../shared/domain/errors/entity-not-found.error";
+import { EntityNotFoundError } from "../../../../../shared/domain/errors/entity-not-found.error";
 import {
   InvalidUUIDError,
   UUID,
-} from "../../../../shared/domain/value-object/uuid.vo";
-import { Category } from "../../../domain/category.entity";
-import { FakeCategoryBuilder } from "../../../domain/fake-category.builder";
-import { InMemoryCategoryRepository } from "../../../infra/db/in-memory/in-memory-category.repository";
+} from "../../../../../shared/domain/value-object/uuid.vo";
+import { Category } from "../../../../domain/category.entity";
+import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
+import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
 import { FindCategoryUseCase } from "../../find-category.use-case";
 
 describe("FindCategoryUseCase Unit Tests", () => {

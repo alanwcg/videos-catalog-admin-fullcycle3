@@ -1,25 +1,25 @@
-import { EntityNotFoundError } from "../../../../shared/domain/errors/entity-not-found.error";
+import { EntityNotFoundError } from "../../../../../shared/domain/errors/entity-not-found.error";
 import {
   InvalidUUIDError,
   UUID,
-} from "../../../../shared/domain/value-object/uuid.vo";
-import { setupSequelize } from "../../../../shared/infra/testing/setup-sequelize.helper";
-import { Category } from "../../../domain/category.entity";
-import { FakeCategoryBuilder } from "../../../domain/fake-category.builder";
-import { InMemoryCategoryRepository } from "../../../infra/db/in-memory/in-memory-category.repository";
-import { CategoryModel } from "../../../infra/db/sequelize/category.model";
-import { SequelizeCategoryRepository } from "../../../infra/db/sequelize/sequelize-category.repository";
+} from "../../../../../shared/domain/value-object/uuid.vo";
+import { Category } from "../../../../domain/category.entity";
+import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
+import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
 import { UpdateCategoryUseCase } from "../../update-category.use-case";
 
-describe("UpdateCategoryUseCase Integration Tests", () => {
+describe("UpdateCategoryUseCase Unit Tests", () => {
   let useCase: UpdateCategoryUseCase;
-  let repository: SequelizeCategoryRepository;
-
-  setupSequelize({ models: [CategoryModel] });
+  let repository: InMemoryCategoryRepository;
 
   beforeEach(() => {
-    repository = new SequelizeCategoryRepository(CategoryModel);
+    repository = new InMemoryCategoryRepository();
     useCase = new UpdateCategoryUseCase(repository);
+  });
+
+  it("should throw InvalidUUIDError when id is invalid", async () => {
+    const promise = useCase.execute({ id: "invalid id", name: "test" });
+    await expect(promise).rejects.toThrow(new InvalidUUIDError());
   });
 
   it("should throw EntityNotFoundError when entity is not found", async () => {
@@ -30,13 +30,32 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
     );
   });
 
+  it("should call repository.update method", async () => {
+    const updateSpy = jest.spyOn(repository, "update");
+    const category = FakeCategoryBuilder.category().build();
+    await repository.insert(category);
+
+    const output = await useCase.execute({
+      id: category.category_id.value,
+      name: "test",
+      description: null,
+    });
+
+    expect(updateSpy).toHaveBeenCalledTimes(1);
+    expect(output).toStrictEqual({
+      id: category.category_id.value,
+      name: "test",
+      description: null,
+      is_active: true,
+      created_at: category.created_at,
+    });
+  });
+
   describe("should update category", () => {
     const category = FakeCategoryBuilder.category().build();
 
-    setupSequelize({ models: [CategoryModel] });
-
     beforeEach(async () => {
-      await repository.insert(category);
+      repository.items = [category];
     });
 
     type Arrange = {
@@ -76,7 +95,7 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
         },
         expected: {
           id: category.category_id.value,
-          name: category.name,
+          name: "test",
           description: null,
           is_active: true,
           created_at: category.created_at,
@@ -89,8 +108,8 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
         },
         expected: {
           id: category.category_id.value,
-          name: category.name,
-          description: category.description,
+          name: "test",
+          description: null,
           is_active: false,
           created_at: category.created_at,
         },
