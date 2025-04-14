@@ -1,4 +1,3 @@
-import { Sequelize } from "sequelize-typescript";
 import { CategoryModel } from "../category.model";
 import { UUID } from "../../../../../shared/domain/value-object/uuid.vo";
 import { CategoryModelMapper } from "../category-model.mapper";
@@ -12,6 +11,7 @@ describe("CategoryModelMapper Integration Tests", () => {
   it("should throw error when category is invalid", () => {
     const model = CategoryModel.build({
       category_id: new UUID().value,
+      name: "a".repeat(256),
     });
     try {
       CategoryModelMapper.toEntity(model);
@@ -20,14 +20,13 @@ describe("CategoryModelMapper Integration Tests", () => {
       );
     } catch (error) {
       expect(error).toBeInstanceOf(EntityValidationError);
-      expect((error as EntityValidationError).errors).toMatchObject({
-        name: [
-          "name should not be empty",
-          "name must be a string",
-          "name must be shorter than or equal to 255 characters",
-        ],
-      });
+      expect((error as EntityValidationError).errors).toMatchObject([
+        {
+          name: ["name must be shorter than or equal to 255 characters"],
+        },
+      ]);
     }
+    expect.assertions(2);
   });
 
   it("should convert category model to entity", () => {

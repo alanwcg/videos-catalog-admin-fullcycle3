@@ -1,22 +1,19 @@
 import { validateSync } from "class-validator";
-import { FieldErrors, IFieldsValidator } from "./fields-validator-interface";
+import { IFieldsValidator } from "./fields-validator-interface";
+import { Notification } from "./notification";
 
-export abstract class ClassValidatorFields<DataType>
-  implements IFieldsValidator<DataType>
-{
-  errors: FieldErrors | null = null;
-  validatedData: DataType | null = null;
-
-  validate(data: any): boolean {
-    const errors = validateSync(data);
+export abstract class ClassValidatorFields implements IFieldsValidator {
+  validate(notification: Notification, data: any, fields: string[]): boolean {
+    const errors = validateSync(data, {
+      groups: fields,
+    });
     if (errors.length) {
-      this.errors = {};
       for (const error of errors) {
         const field = error.property;
-        this.errors[field] = Object.values(error.constraints!);
+        Object.values(error.constraints!).forEach((message) =>
+          notification.addError(message, field)
+        );
       }
-    } else {
-      this.validatedData = data;
     }
     return !errors.length;
   }

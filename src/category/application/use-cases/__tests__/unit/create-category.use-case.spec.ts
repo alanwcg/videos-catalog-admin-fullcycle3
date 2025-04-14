@@ -1,3 +1,4 @@
+import { EntityValidationError } from "../../../../../shared/domain/validators/validation.error";
 import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
 import { CreateCategoryUseCase } from "../../create-category.use-case";
 
@@ -8,6 +9,13 @@ describe("CreateCategoryUseCase Unit Tests", () => {
   beforeEach(() => {
     repository = new InMemoryCategoryRepository();
     useCase = new CreateCategoryUseCase(repository);
+  });
+
+  it("should throw EntityValidationError when category is not valid", async () => {
+    const input = { name: "t".repeat(256) };
+
+    const promise = useCase.execute(input);
+    await expect(promise).rejects.toThrow(EntityValidationError);
   });
 
   it("should create a category", async () => {

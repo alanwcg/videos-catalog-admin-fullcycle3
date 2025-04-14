@@ -1,4 +1,5 @@
 import { EntityNotFoundError } from "../../../../../shared/domain/errors/entity-not-found.error";
+import { EntityValidationError } from "../../../../../shared/domain/validators/validation.error";
 import {
   InvalidUUIDError,
   UUID,
@@ -28,6 +29,17 @@ describe("UpdateCategoryUseCase Unit Tests", () => {
     await expect(promise).rejects.toThrow(
       new EntityNotFoundError(uuid, Category)
     );
+  });
+
+  it("should throw EntityValidationError when category is not valid", async () => {
+    const category = FakeCategoryBuilder.category().build();
+    await repository.insert(category);
+
+    const promise = useCase.execute({
+      id: category.category_id.value,
+      name: "t".repeat(256),
+    });
+    await expect(promise).rejects.toThrow(EntityValidationError);
   });
 
   it("should call repository.update method", async () => {

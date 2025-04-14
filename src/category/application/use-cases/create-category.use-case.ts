@@ -1,4 +1,5 @@
 import { IUseCase } from "../../../shared/application/use-case.interface";
+import { EntityValidationError } from "../../../shared/domain/validators/validation.error";
 import { Category } from "../../domain/category.entity";
 import { ICategoryRepository } from "../../domain/category.repository";
 import {
@@ -16,6 +17,10 @@ export class CreateCategoryUseCase
     input: CreateCategoryUseCase.Input
   ): Promise<CreateCategoryUseCase.Output> {
     const category = Category.create(input);
+
+    if (category.notification.hasErrors()) {
+      throw new EntityValidationError(category.notification.toJSON());
+    }
 
     await this.repository.insert(category);
 
