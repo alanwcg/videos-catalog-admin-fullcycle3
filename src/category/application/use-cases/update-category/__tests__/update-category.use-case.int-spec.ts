@@ -9,7 +9,7 @@ import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
 import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
 import { CategoryModel } from "../../../../infra/db/sequelize/category.model";
 import { SequelizeCategoryRepository } from "../../../../infra/db/sequelize/sequelize-category.repository";
-import { UpdateCategoryUseCase } from "../../update-category.use-case";
+import { UpdateCategoryUseCase } from "../update-category.use-case";
 
 describe("UpdateCategoryUseCase Integration Tests", () => {
   let useCase: UpdateCategoryUseCase;

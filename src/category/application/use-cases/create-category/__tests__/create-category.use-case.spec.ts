@@ -1,6 +1,6 @@
 import { EntityValidationError } from "../../../../../shared/domain/validators/validation.error";
 import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
-import { CreateCategoryUseCase } from "../../create-category.use-case";
+import { CreateCategoryUseCase } from "../create-category.use-case";
 
 describe("CreateCategoryUseCase Unit Tests", () => {
   let useCase: CreateCategoryUseCase;

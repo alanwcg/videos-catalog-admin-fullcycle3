@@ -5,17 +5,17 @@ import { Category } from "../../../../domain/category.entity";
 import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
 import { CategoryModel } from "../../../../infra/db/sequelize/category.model";
 import { SequelizeCategoryRepository } from "../../../../infra/db/sequelize/sequelize-category.repository";
-import { FindCategoryUseCase } from "../../find-category.use-case";
+import { DeleteCategoryUseCase } from "../delete-category.use-case";
 
-describe("FindCategoryUseCase Integration Tests", () => {
-  let useCase: FindCategoryUseCase;
+describe("DeleteCategoryUseCase Integration Tests", () => {
+  let useCase: DeleteCategoryUseCase;
   let repository: SequelizeCategoryRepository;
 
   setupSequelize({ models: [CategoryModel] });
 
   beforeEach(() => {
     repository = new SequelizeCategoryRepository(CategoryModel);
-    useCase = new FindCategoryUseCase(repository);
+    useCase = new DeleteCategoryUseCase(repository);
   });
 
   it("should throw EntityNotFoundError when entity is not found", async () => {
@@ -26,20 +26,15 @@ describe("FindCategoryUseCase Integration Tests", () => {
     );
   });
 
-  it("should find category", async () => {
+  it("should delete category", async () => {
     const category = FakeCategoryBuilder.category().build();
     await repository.insert(category);
 
-    const output = await useCase.execute({
+    await useCase.execute({
       id: category.category_id.value,
     });
 
-    expect(output).toStrictEqual({
-      id: category.category_id.value,
-      name: category.name,
-      description: category.description,
-      is_active: category.is_active,
-      created_at: category.created_at,
-    });
+    const promise = repository.findById(category.category_id);
+    await expect(promise).resolves.toBeNull();
   });
 });

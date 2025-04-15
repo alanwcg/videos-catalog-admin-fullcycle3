@@ -1,23 +1,21 @@
-import { IUseCase } from "../../../shared/application/use-case.interface";
-import { EntityNotFoundError } from "../../../shared/domain/errors/entity-not-found.error";
-import { EntityValidationError } from "../../../shared/domain/validators/validation.error";
-import { UUID } from "../../../shared/domain/value-object/uuid.vo";
-import { Category } from "../../domain/category.entity";
-import { ICategoryRepository } from "../../domain/category.repository";
+import { IUseCase } from "../../../../shared/application/use-case.interface";
+import { EntityNotFoundError } from "../../../../shared/domain/errors/entity-not-found.error";
+import { EntityValidationError } from "../../../../shared/domain/validators/validation.error";
+import { UUID } from "../../../../shared/domain/value-object/uuid.vo";
+import { Category } from "../../../domain/category.entity";
+import { ICategoryRepository } from "../../../domain/category.repository";
 import {
   CategoryOutput,
   CategoryOutputMapper,
-} from "./shared/category-output.mapper";
+} from "../shared/category-output.mapper";
+import { UpdateCategoryInput } from "./update-category.input";
 
 export class UpdateCategoryUseCase
-  implements
-    IUseCase<UpdateCategoryUseCase.Input, UpdateCategoryUseCase.Output>
+  implements IUseCase<UpdateCategoryInput, UpdateCategoryOutput>
 {
   constructor(private readonly repository: ICategoryRepository) {}
 
-  async execute(
-    input: UpdateCategoryUseCase.Input
-  ): Promise<UpdateCategoryUseCase.Output> {
+  async execute(input: UpdateCategoryInput): Promise<UpdateCategoryOutput> {
     const id = new UUID(input.id);
     const category = await this.repository.findById(id);
 
@@ -51,13 +49,4 @@ export class UpdateCategoryUseCase
   }
 }
 
-export namespace UpdateCategoryUseCase {
-  export type Input = {
-    id: string;
-    name?: string;
-    description?: string | null;
-    is_active?: boolean;
-  };
-
-  export type Output = CategoryOutput;
-}
+export type UpdateCategoryOutput = CategoryOutput;

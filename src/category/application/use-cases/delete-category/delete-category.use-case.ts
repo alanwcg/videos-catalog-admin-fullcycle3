@@ -1,6 +1,6 @@
-import { IUseCase } from "../../../shared/application/use-case.interface";
-import { UUID } from "../../../shared/domain/value-object/uuid.vo";
-import { ICategoryRepository } from "../../domain/category.repository";
+import { IUseCase } from "../../../../shared/application/use-case.interface";
+import { UUID } from "../../../../shared/domain/value-object/uuid.vo";
+import { ICategoryRepository } from "../../../domain/category.repository";
 
 export class DeleteCategoryUseCase
   implements

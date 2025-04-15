@@ -7,7 +7,7 @@ import {
 import { Category } from "../../../../domain/category.entity";
 import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
 import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
-import { UpdateCategoryUseCase } from "../../update-category.use-case";
+import { UpdateCategoryUseCase } from "../update-category.use-case";
 
 describe("UpdateCategoryUseCase Unit Tests", () => {
   let useCase: UpdateCategoryUseCase;

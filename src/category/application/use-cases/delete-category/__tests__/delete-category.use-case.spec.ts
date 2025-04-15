@@ -6,7 +6,7 @@ import {
 import { Category } from "../../../../domain/category.entity";
 import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
 import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
-import { DeleteCategoryUseCase } from "../../delete-category.use-case";
+import { DeleteCategoryUseCase } from "../delete-category.use-case";
 
 describe("DeleteCategoryUseCase Unit Tests", () => {
   let useCase: DeleteCategoryUseCase;

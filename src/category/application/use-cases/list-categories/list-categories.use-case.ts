@@ -1,19 +1,19 @@
 import {
   PaginatedOutput,
   PaginatedOutputMapper,
-} from "../../../shared/application/paginated-output";
-import { IUseCase } from "../../../shared/application/use-case.interface";
-import { SortDirection } from "../../../shared/domain/repository/search-params";
+} from "../../../../shared/application/paginated-output";
+import { IUseCase } from "../../../../shared/application/use-case.interface";
+import { SortDirection } from "../../../../shared/domain/repository/search-params";
 import {
   CategoryFilter,
   CategorySearchParams,
   CategorySearchResult,
   ICategoryRepository,
-} from "../../domain/category.repository";
+} from "../../../domain/category.repository";
 import {
   CategoryOutput,
   CategoryOutputMapper,
-} from "./shared/category-output.mapper";
+} from "../shared/category-output.mapper";
 
 export class ListCategoriesUseCase
   implements
