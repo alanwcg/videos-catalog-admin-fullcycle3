@@ -36,7 +36,7 @@ export class Notification {
   toJSON() {
     const errors: Array<string | { [key: string]: string[] }> = [];
     this.errors.forEach((value, field) => {
-      if (typeof value === "string") {
+      if (typeof value === 'string') {
         errors.push(value);
       } else {
         errors.push({ [field]: value });

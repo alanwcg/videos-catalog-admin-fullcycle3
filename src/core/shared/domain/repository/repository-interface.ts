@@ -1,7 +1,7 @@
-import { Entity } from "../entity";
-import { ValueObject } from "../value-object";
-import { SearchParams } from "./search-params";
-import { SearchResult } from "./search-result";
+import { Entity } from '../entity';
+import { ValueObject } from '../value-object';
+import { SearchParams } from './search-params';
+import { SearchResult } from './search-result';
 
 export interface IRepository<E extends Entity, EntityID extends ValueObject> {
   insert(entity: E): Promise<void>;
@@ -20,7 +20,7 @@ export interface ISearchableRepository<
   EntityID extends ValueObject,
   Filter = string,
   SearchInput = SearchParams<Filter>,
-  SearchOutput = SearchResult
+  SearchOutput = SearchResult,
 > extends IRepository<E, EntityID> {
   sortableFields: string[];
   search(input: SearchInput): Promise<SearchOutput>;

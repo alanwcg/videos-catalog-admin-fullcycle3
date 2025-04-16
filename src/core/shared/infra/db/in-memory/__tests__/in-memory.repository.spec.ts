@@ -1,7 +1,7 @@
-import { Entity } from "../../../../domain/entity";
-import { EntityNotFoundError } from "../../../../domain/errors/entity-not-found.error";
-import { UUID } from "../../../../domain/value-object/uuid.vo";
-import { InMemoryRepository } from "../in-memory.repository";
+import { Entity } from '../../../../domain/entity';
+import { EntityNotFoundError } from '../../../../domain/errors/entity-not-found.error';
+import { UUID } from '../../../../domain/value-object/uuid.vo';
+import { InMemoryRepository } from '../in-memory.repository';
 
 type EntityStubConstructorProps = {
   entity_id?: UUID;
@@ -42,17 +42,17 @@ class InMemoryRepositoryStub extends InMemoryRepository<EntityStub, UUID> {
   }
 }
 
-describe("InMemoryRepository Unit Tests", () => {
+describe('InMemoryRepository Unit Tests', () => {
   let repo: InMemoryRepositoryStub;
 
   beforeEach(() => {
     repo = new InMemoryRepositoryStub();
   });
 
-  it("should insert a new entity", async () => {
+  it('should insert a new entity', async () => {
     const entity = new EntityStub({
       entity_id: new UUID(),
-      name: "Test",
+      name: 'Test',
       price: 10,
     });
 
@@ -62,16 +62,16 @@ describe("InMemoryRepository Unit Tests", () => {
     expect(repo.items[0]).toEqual(entity);
   });
 
-  it("should bulk insert entities", async () => {
+  it('should bulk insert entities', async () => {
     const entities = [
       new EntityStub({
         entity_id: new UUID(),
-        name: "Test",
+        name: 'Test',
         price: 10,
       }),
       new EntityStub({
         entity_id: new UUID(),
-        name: "Test 2",
+        name: 'Test 2',
         price: 10,
       }),
     ];
@@ -83,9 +83,9 @@ describe("InMemoryRepository Unit Tests", () => {
     expect(repo.items[1]).toEqual(entities[1]);
   });
 
-  it("should return all entities", async () => {
+  it('should return all entities', async () => {
     const entity = new EntityStub({
-      name: "Test",
+      name: 'Test',
       price: 10,
     });
 
@@ -95,46 +95,46 @@ describe("InMemoryRepository Unit Tests", () => {
     expect(entities).toStrictEqual([entity]);
   });
 
-  it("should throw EntityNotFoundError on update when entity is not found", async () => {
+  it('should throw EntityNotFoundError on update when entity is not found', async () => {
     const entity = new EntityStub({
-      name: "test",
+      name: 'test',
       price: 10,
     });
 
     const promise = repo.update(entity);
 
     await expect(promise).rejects.toThrow(
-      new EntityNotFoundError(entity.entity_id, EntityStub)
+      new EntityNotFoundError(entity.entity_id, EntityStub),
     );
   });
 
-  it("should update an entity", async () => {
+  it('should update an entity', async () => {
     const entity = new EntityStub({
-      name: "test",
+      name: 'test',
       price: 10,
     });
 
     await repo.insert(entity);
-    entity.changeName("updated");
+    entity.changeName('updated');
     entity.changePrice(100);
     await repo.update(entity);
 
     expect(entity.toJSON()).toStrictEqual(repo.items[0].toJSON());
   });
 
-  it("should throw EntityNotFoundError on delete when entity is not found", async () => {
+  it('should throw EntityNotFoundError on delete when entity is not found', async () => {
     const uuid = new UUID();
 
     const promise = repo.delete(uuid);
 
     await expect(promise).rejects.toThrow(
-      new EntityNotFoundError(uuid, EntityStub)
+      new EntityNotFoundError(uuid, EntityStub),
     );
   });
 
-  it("should delete an entity", async () => {
+  it('should delete an entity', async () => {
     const entity = new EntityStub({
-      name: "test",
+      name: 'test',
       price: 10,
     });
 

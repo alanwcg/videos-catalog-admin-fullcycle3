@@ -1,18 +1,18 @@
-import { Sequelize } from "sequelize-typescript";
-import { SequelizeCategoryRepository } from "../sequelize-category.repository";
-import { CategoryModel } from "../category.model";
-import { UUID } from "../../../../../shared/domain/value-object/uuid.vo";
-import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
-import { EntityNotFoundError } from "../../../../../shared/domain/errors/entity-not-found.error";
-import { Category } from "../../../../domain/category.entity";
-import { CategoryModelMapper } from "../category-model.mapper";
+import { Sequelize } from 'sequelize-typescript';
+import { SequelizeCategoryRepository } from '../sequelize-category.repository';
+import { CategoryModel } from '../category.model';
+import { UUID } from '../../../../../shared/domain/value-object/uuid.vo';
+import { FakeCategoryBuilder } from '../../../../domain/fake-category.builder';
+import { EntityNotFoundError } from '../../../../../shared/domain/errors/entity-not-found.error';
+import { Category } from '../../../../domain/category.entity';
+import { CategoryModelMapper } from '../category-model.mapper';
 import {
   CategorySearchParams,
   CategorySearchResult,
-} from "../../../../domain/category.repository";
-import { setupSequelize } from "../../../../../shared/infra/testing/setup-sequelize.helper";
+} from '../../../../domain/category.repository';
+import { setupSequelize } from '../../../../../shared/infra/testing/setup-sequelize.helper';
 
-describe("SequelizeCategoryRepository Integration Tests", () => {
+describe('SequelizeCategoryRepository Integration Tests', () => {
   setupSequelize({ models: [CategoryModel] });
   let repository: SequelizeCategoryRepository;
 
@@ -20,7 +20,7 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
     repository = new SequelizeCategoryRepository(CategoryModel);
   });
 
-  it("should insert a new category", async () => {
+  it('should insert a new category', async () => {
     let category = FakeCategoryBuilder.category().build();
 
     await repository.insert(category);
@@ -29,13 +29,13 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
     expect(entity.toJSON()).toStrictEqual(category.toJSON());
   });
 
-  it("should return null if a category is not found by ID", async () => {
+  it('should return null if a category is not found by ID', async () => {
     let category = await repository.findById(new UUID());
 
     expect(category).toBeNull();
   });
 
-  it("should find a category by id", async () => {
+  it('should find a category by id', async () => {
     const category = FakeCategoryBuilder.category().build();
 
     await CategoryModel.create(category.toJSON());
@@ -44,7 +44,7 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
     expect(foundCategory.toJSON()).toStrictEqual(category.toJSON());
   });
 
-  it("should find all categories", async () => {
+  it('should find all categories', async () => {
     const category = FakeCategoryBuilder.category().build();
 
     await CategoryModel.create(category.toJSON());
@@ -54,37 +54,37 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
     expect(categories[0].toJSON()).toStrictEqual(category.toJSON());
   });
 
-  it("should throw error on update when category is not found", async () => {
+  it('should throw error on update when category is not found', async () => {
     const category = FakeCategoryBuilder.category().build();
     const promise = repository.update(category);
     await expect(promise).rejects.toThrow(
-      new EntityNotFoundError(category.category_id, Category)
+      new EntityNotFoundError(category.category_id, Category),
     );
   });
 
-  it("should update a category", async () => {
+  it('should update a category', async () => {
     const category = FakeCategoryBuilder.category().build();
 
     await CategoryModel.create(category.toJSON());
-    category.changeName("Name updated");
+    category.changeName('Name updated');
     await repository.update(category);
     const updatedCategory = await CategoryModel.findByPk(
-      category.category_id.value
+      category.category_id.value,
     );
 
     expect(category.toJSON()).toStrictEqual(updatedCategory.toJSON());
-    expect(updatedCategory.name).toBe("Name updated");
+    expect(updatedCategory.name).toBe('Name updated');
   });
 
-  it("should throw error on delete when category is not found", async () => {
+  it('should throw error on delete when category is not found', async () => {
     const categoryID = new UUID();
     const promise = repository.delete(categoryID);
     await expect(promise).rejects.toThrow(
-      new EntityNotFoundError(categoryID, Category)
+      new EntityNotFoundError(categoryID, Category),
     );
   });
 
-  it("should delete a category", async () => {
+  it('should delete a category', async () => {
     const category = FakeCategoryBuilder.category().build();
 
     await CategoryModel.create(category.toJSON());
@@ -94,21 +94,21 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
     await expect(promise).resolves.toBeNull();
   });
 
-  describe("search method tests", () => {
+  describe('search method tests', () => {
     setupSequelize({ models: [CategoryModel] });
     beforeEach(async () => {
       repository = new SequelizeCategoryRepository(CategoryModel);
     });
 
-    it("should apply only pagination when other params are null", async () => {
+    it('should apply only pagination when other params are null', async () => {
       const created_at = new Date();
       const categories = FakeCategoryBuilder.categories(16)
-        .withName("Movie")
+        .withName('Movie')
         .withDescription(null)
         .withCreatedAt(created_at)
         .build();
       await repository.bulkInsert(categories);
-      const toEntitySpy = jest.spyOn(CategoryModelMapper, "toEntity");
+      const toEntitySpy = jest.spyOn(CategoryModelMapper, 'toEntity');
       const searchResult = await repository.search(new CategorySearchParams());
       expect(toEntitySpy).toHaveBeenCalledTimes(15);
       expect(searchResult).toBeInstanceOf(CategorySearchResult);
@@ -125,22 +125,22 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
       const items = searchResult.items.map((item) => item.toJSON());
       expect(items).toMatchObject(
         new Array(15).fill({
-          name: "Movie",
+          name: 'Movie',
           description: null,
           is_active: true,
           created_at,
-        })
+        }),
       );
     });
 
-    it("should order by created_at DESC when search params are null", async () => {
+    it('should order by created_at DESC when search params are null', async () => {
       const created_at = new Date();
       const categories = FakeCategoryBuilder.categories(16)
         .withName((index) => `Movie${index}`)
         .withDescription(null)
         .withCreatedAt((index) => new Date(created_at.getTime() + index))
         .build();
-      console.log("categories[0]", categories[0].name);
+      console.log('categories[0]', categories[0].name);
       await repository.bulkInsert(categories);
       const searchResult = await repository.search(new CategorySearchParams());
       const items = searchResult.items;
@@ -149,22 +149,22 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
       });
     });
 
-    it("should apply pagination and filter", async () => {
+    it('should apply pagination and filter', async () => {
       const categories = [
         FakeCategoryBuilder.category()
-          .withName("test")
+          .withName('test')
           .withCreatedAt(new Date(new Date().getTime() + 5000))
           .build(),
         FakeCategoryBuilder.category()
-          .withName("a")
+          .withName('a')
           .withCreatedAt(new Date(new Date().getTime() + 4000))
           .build(),
         FakeCategoryBuilder.category()
-          .withName("TEST")
+          .withName('TEST')
           .withCreatedAt(new Date(new Date().getTime() + 3000))
           .build(),
         FakeCategoryBuilder.category()
-          .withName("TeSt")
+          .withName('TeSt')
           .withCreatedAt(new Date(new Date().getTime() + 2000))
           .build(),
       ];
@@ -175,8 +175,8 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
         new CategorySearchParams({
           page: 1,
           per_page: 2,
-          filter: "TEST",
-        })
+          filter: 'TEST',
+        }),
       );
       expect(searchResult.toJSON(true)).toMatchObject(
         new CategorySearchResult({
@@ -184,15 +184,15 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           total: 3,
           current_page: 1,
           per_page: 2,
-        }).toJSON(true)
+        }).toJSON(true),
       );
 
       searchResult = await repository.search(
         new CategorySearchParams({
           page: 2,
           per_page: 2,
-          filter: "TEST",
-        })
+          filter: 'TEST',
+        }),
       );
       expect(searchResult.toJSON(true)).toMatchObject(
         new CategorySearchResult({
@@ -200,17 +200,17 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           total: 3,
           current_page: 2,
           per_page: 2,
-        }).toJSON(true)
+        }).toJSON(true),
       );
     });
 
-    describe("should apply pagination and sort", () => {
+    describe('should apply pagination and sort', () => {
       const categories = [
-        FakeCategoryBuilder.category().withName("b").build(),
-        FakeCategoryBuilder.category().withName("a").build(),
-        FakeCategoryBuilder.category().withName("d").build(),
-        FakeCategoryBuilder.category().withName("e").build(),
-        FakeCategoryBuilder.category().withName("c").build(),
+        FakeCategoryBuilder.category().withName('b').build(),
+        FakeCategoryBuilder.category().withName('a').build(),
+        FakeCategoryBuilder.category().withName('d').build(),
+        FakeCategoryBuilder.category().withName('e').build(),
+        FakeCategoryBuilder.category().withName('c').build(),
       ];
 
       const arrange = [
@@ -218,7 +218,7 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           params: new CategorySearchParams({
             page: 1,
             per_page: 2,
-            sort: "name",
+            sort: 'name',
           }),
           result: new CategorySearchResult({
             items: [categories[1], categories[0]],
@@ -231,7 +231,7 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           params: new CategorySearchParams({
             page: 2,
             per_page: 2,
-            sort: "name",
+            sort: 'name',
           }),
           result: new CategorySearchResult({
             items: [categories[4], categories[2]],
@@ -244,8 +244,8 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           params: new CategorySearchParams({
             page: 1,
             per_page: 2,
-            sort: "name",
-            sort_dir: "desc",
+            sort: 'name',
+            sort_dir: 'desc',
           }),
           result: new CategorySearchResult({
             items: [categories[3], categories[2]],
@@ -258,8 +258,8 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           params: new CategorySearchParams({
             page: 2,
             per_page: 2,
-            sort: "name",
-            sort_dir: "desc",
+            sort: 'name',
+            sort_dir: 'desc',
           }),
           result: new CategorySearchResult({
             items: [categories[4], categories[0]],
@@ -274,26 +274,26 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
         await repository.bulkInsert(categories);
       });
 
-      test("sortable fields", () => {
-        expect(repository.sortableFields).toStrictEqual(["name", "created_at"]);
+      test('sortable fields', () => {
+        expect(repository.sortableFields).toStrictEqual(['name', 'created_at']);
       });
 
       test.each(arrange)(
-        "when value is $params",
+        'when value is $params',
         async ({ params, result }) => {
           const searchResult = await repository.search(params);
           expect(searchResult.toJSON(true)).toMatchObject(result.toJSON(true));
-        }
+        },
       );
     });
 
-    describe("should search using filter, sort and pagination", () => {
+    describe('should search using filter, sort and pagination', () => {
       const categories = [
-        FakeCategoryBuilder.category().withName("test").build(),
-        FakeCategoryBuilder.category().withName("a").build(),
-        FakeCategoryBuilder.category().withName("TEST").build(),
-        FakeCategoryBuilder.category().withName("e").build(),
-        FakeCategoryBuilder.category().withName("TeSt").build(),
+        FakeCategoryBuilder.category().withName('test').build(),
+        FakeCategoryBuilder.category().withName('a').build(),
+        FakeCategoryBuilder.category().withName('TEST').build(),
+        FakeCategoryBuilder.category().withName('e').build(),
+        FakeCategoryBuilder.category().withName('TeSt').build(),
       ];
 
       const arrange = [
@@ -301,8 +301,8 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           params: new CategorySearchParams({
             page: 1,
             per_page: 2,
-            sort: "name",
-            filter: "TEST",
+            sort: 'name',
+            filter: 'TEST',
           }),
           result: new CategorySearchResult({
             items: [categories[2], categories[4]],
@@ -315,8 +315,8 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
           params: new CategorySearchParams({
             page: 2,
             per_page: 2,
-            sort: "name",
-            filter: "TEST",
+            sort: 'name',
+            filter: 'TEST',
           }),
           result: new CategorySearchResult({
             items: [categories[0]],
@@ -332,11 +332,11 @@ describe("SequelizeCategoryRepository Integration Tests", () => {
       });
 
       test.each(arrange)(
-        "when value is $params",
+        'when value is $params',
         async ({ params, result }) => {
           const searchResult = await repository.search(params);
           expect(searchResult.toJSON(true)).toMatchObject(result.toJSON(true));
-        }
+        },
       );
     });
   });

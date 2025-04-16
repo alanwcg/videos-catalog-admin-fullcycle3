@@ -1,17 +1,17 @@
-import { EntityNotFoundError } from "../../../../../shared/domain/errors/entity-not-found.error";
+import { EntityNotFoundError } from '../../../../../shared/domain/errors/entity-not-found.error';
 import {
   InvalidUUIDError,
   UUID,
-} from "../../../../../shared/domain/value-object/uuid.vo";
-import { setupSequelize } from "../../../../../shared/infra/testing/setup-sequelize.helper";
-import { Category } from "../../../../domain/category.entity";
-import { FakeCategoryBuilder } from "../../../../domain/fake-category.builder";
-import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
-import { CategoryModel } from "../../../../infra/db/sequelize/category.model";
-import { SequelizeCategoryRepository } from "../../../../infra/db/sequelize/sequelize-category.repository";
-import { UpdateCategoryUseCase } from "../update-category.use-case";
+} from '../../../../../shared/domain/value-object/uuid.vo';
+import { setupSequelize } from '../../../../../shared/infra/testing/setup-sequelize.helper';
+import { Category } from '../../../../domain/category.entity';
+import { FakeCategoryBuilder } from '../../../../domain/fake-category.builder';
+import { InMemoryCategoryRepository } from '../../../../infra/db/in-memory/in-memory-category.repository';
+import { CategoryModel } from '../../../../infra/db/sequelize/category.model';
+import { SequelizeCategoryRepository } from '../../../../infra/db/sequelize/sequelize-category.repository';
+import { UpdateCategoryUseCase } from '../update-category.use-case';
 
-describe("UpdateCategoryUseCase Integration Tests", () => {
+describe('UpdateCategoryUseCase Integration Tests', () => {
   let useCase: UpdateCategoryUseCase;
   let repository: SequelizeCategoryRepository;
 
@@ -22,15 +22,15 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
     useCase = new UpdateCategoryUseCase(repository);
   });
 
-  it("should throw EntityNotFoundError when entity is not found", async () => {
+  it('should throw EntityNotFoundError when entity is not found', async () => {
     const uuid = new UUID();
-    const promise = useCase.execute({ id: uuid.value, name: "test" });
+    const promise = useCase.execute({ id: uuid.value, name: 'test' });
     await expect(promise).rejects.toThrow(
-      new EntityNotFoundError(uuid, Category)
+      new EntityNotFoundError(uuid, Category),
     );
   });
 
-  describe("should update category", () => {
+  describe('should update category', () => {
     const category = FakeCategoryBuilder.category().build();
 
     setupSequelize({ models: [CategoryModel] });
@@ -59,11 +59,11 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
       {
         received: {
           id: category.category_id.value,
-          name: "test",
+          name: 'test',
         },
         expected: {
           id: category.category_id.value,
-          name: "test",
+          name: 'test',
           description: category.description,
           is_active: true,
           created_at: category.created_at,
@@ -98,14 +98,14 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
       {
         received: {
           id: category.category_id.value,
-          name: "updated",
-          description: "some description",
+          name: 'updated',
+          description: 'some description',
           is_active: true,
         },
         expected: {
           id: category.category_id.value,
-          name: "updated",
-          description: "some description",
+          name: 'updated',
+          description: 'some description',
           is_active: true,
           created_at: category.created_at,
         },
@@ -113,18 +113,18 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
     ];
 
     test.each(arrange)(
-      "when input is $received",
+      'when input is $received',
       async ({ received, expected }) => {
         const output = await useCase.execute({
           id: received.id,
-          ...("name" in received && { name: received.name }),
-          ...("description" in received && {
+          ...('name' in received && { name: received.name }),
+          ...('description' in received && {
             description: received.description,
           }),
-          ...("is_active" in received && { is_active: received.is_active }),
+          ...('is_active' in received && { is_active: received.is_active }),
         });
         expect(output).toStrictEqual(expected);
-      }
+      },
     );
   });
 });

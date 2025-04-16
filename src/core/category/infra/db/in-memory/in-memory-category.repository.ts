@@ -1,23 +1,23 @@
-import { UUID } from "../../../../shared/domain/value-object/uuid.vo";
+import { UUID } from '../../../../shared/domain/value-object/uuid.vo';
 import {
   ApplyFilterParams,
   ApplySortParams,
   InMemorySearchableRepository,
-} from "../../../../shared/infra/db/in-memory/in-memory.repository";
-import { Category } from "../../../domain/category.entity";
+} from '../../../../shared/infra/db/in-memory/in-memory.repository';
+import { Category } from '../../../domain/category.entity';
 import {
   CategoryFilter,
   ICategoryRepository,
-} from "../../../domain/category.repository";
+} from '../../../domain/category.repository';
 
 export class InMemoryCategoryRepository
   extends InMemorySearchableRepository<Category, UUID>
   implements ICategoryRepository
 {
-  sortableFields: string[] = ["name", "created_at"];
+  sortableFields: string[] = ['name', 'created_at'];
 
   protected async applyFilter(
-    params: ApplyFilterParams<Category, CategoryFilter>
+    params: ApplyFilterParams<Category, CategoryFilter>,
   ): Promise<Category[]> {
     const { items, filter } = params;
 
@@ -26,7 +26,7 @@ export class InMemoryCategoryRepository
     }
 
     return items.filter((i) =>
-      i.name.toLowerCase().includes(filter.toLowerCase())
+      i.name.toLowerCase().includes(filter.toLowerCase()),
     );
   }
 
@@ -35,7 +35,7 @@ export class InMemoryCategoryRepository
 
     return sort
       ? super.applySort({ items, sort, sort_dir })
-      : super.applySort({ items, sort: "created_at", sort_dir: "desc" });
+      : super.applySort({ items, sort: 'created_at', sort_dir: 'desc' });
   }
 
   getEntity(): new (...args: any[]) => Category {

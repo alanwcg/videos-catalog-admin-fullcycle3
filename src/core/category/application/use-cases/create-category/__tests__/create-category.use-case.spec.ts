@@ -1,8 +1,8 @@
-import { EntityValidationError } from "../../../../../shared/domain/validators/validation.error";
-import { InMemoryCategoryRepository } from "../../../../infra/db/in-memory/in-memory-category.repository";
-import { CreateCategoryUseCase } from "../create-category.use-case";
+import { EntityValidationError } from '../../../../../shared/domain/validators/validation.error';
+import { InMemoryCategoryRepository } from '../../../../infra/db/in-memory/in-memory-category.repository';
+import { CreateCategoryUseCase } from '../create-category.use-case';
 
-describe("CreateCategoryUseCase Unit Tests", () => {
+describe('CreateCategoryUseCase Unit Tests', () => {
   let useCase: CreateCategoryUseCase;
   let repository: InMemoryCategoryRepository;
 
@@ -11,36 +11,36 @@ describe("CreateCategoryUseCase Unit Tests", () => {
     useCase = new CreateCategoryUseCase(repository);
   });
 
-  it("should throw EntityValidationError when category is not valid", async () => {
-    const input = { name: "t".repeat(256) };
+  it('should throw EntityValidationError when category is not valid', async () => {
+    const input = { name: 't'.repeat(256) };
 
     const promise = useCase.execute(input);
     await expect(promise).rejects.toThrow(EntityValidationError);
   });
 
-  it("should create a category", async () => {
-    const insertSpy = jest.spyOn(repository, "insert");
+  it('should create a category', async () => {
+    const insertSpy = jest.spyOn(repository, 'insert');
 
-    let output = await useCase.execute({ name: "test" });
+    let output = await useCase.execute({ name: 'test' });
     expect(insertSpy).toHaveBeenCalledTimes(1);
     expect(output).toStrictEqual({
       id: repository.items[0].category_id.value,
-      name: "test",
+      name: 'test',
       description: null,
       is_active: true,
       created_at: repository.items[0].created_at,
     });
 
     output = await useCase.execute({
-      name: "TEST",
-      description: "some description",
+      name: 'TEST',
+      description: 'some description',
       is_active: false,
     });
     expect(insertSpy).toHaveBeenCalledTimes(2);
     expect(output).toStrictEqual({
       id: repository.items[1].category_id.value,
-      name: "TEST",
-      description: "some description",
+      name: 'TEST',
+      description: 'some description',
       is_active: false,
       created_at: repository.items[1].created_at,
     });

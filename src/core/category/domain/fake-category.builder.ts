@@ -1,7 +1,7 @@
-import { Chance } from "chance";
-import { UUID } from "../../shared/domain/value-object/uuid.vo";
-import { Category } from "./category.entity";
-import _ from "lodash";
+import { Chance } from 'chance';
+import { UUID } from '../../shared/domain/value-object/uuid.vo';
+import { Category } from './category.entity';
+import _ from 'lodash';
 
 type ValueOrFactory<T> = T | ((index: number) => T);
 
@@ -88,39 +88,39 @@ export class FakeCategoryBuilder<TBuild> {
   }
 
   private callFactory(valueOrFactory: ValueOrFactory<any>, index: number) {
-    return typeof valueOrFactory === "function"
+    return typeof valueOrFactory === 'function'
       ? valueOrFactory(index)
       : valueOrFactory;
   }
 
   private getValue(prop: string) {
-    const optional = ["category_id", "created_at"];
+    const optional = ['category_id', 'created_at'];
     const privateProp = `_${prop}` as keyof this;
     if (!this[privateProp] && optional.includes(prop)) {
       throw new Error(
-        `Property ${prop} do not have a factory, use 'with' methods.`
+        `Property ${prop} do not have a factory, use 'with' methods.`,
       );
     }
     return this.callFactory(this[privateProp], 0);
   }
 
   get category_id() {
-    return this.getValue("category_id");
+    return this.getValue('category_id');
   }
 
   get name() {
-    return this.getValue("name");
+    return this.getValue('name');
   }
 
   get description() {
-    return this.getValue("description");
+    return this.getValue('description');
   }
 
   get is_active() {
-    return this.getValue("is_active");
+    return this.getValue('is_active');
   }
 
   get created_at() {
-    return this.getValue("created_at");
+    return this.getValue('created_at');
   }
 }

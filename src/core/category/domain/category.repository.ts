@@ -1,8 +1,8 @@
-import { ISearchableRepository } from "../../shared/domain/repository/repository-interface";
-import { SearchParams } from "../../shared/domain/repository/search-params";
-import { SearchResult } from "../../shared/domain/repository/search-result";
-import { UUID } from "../../shared/domain/value-object/uuid.vo";
-import { Category } from "./category.entity";
+import { ISearchableRepository } from '../../shared/domain/repository/repository-interface';
+import { SearchParams } from '../../shared/domain/repository/search-params';
+import { SearchResult } from '../../shared/domain/repository/search-result';
+import { UUID } from '../../shared/domain/value-object/uuid.vo';
+import { Category } from './category.entity';
 
 export type CategoryFilter = string;
 

@@ -1,16 +1,16 @@
-import { Entity } from "../../../domain/entity";
-import { EntityNotFoundError } from "../../../domain/errors/entity-not-found.error";
+import { Entity } from '../../../domain/entity';
+import { EntityNotFoundError } from '../../../domain/errors/entity-not-found.error';
 import {
   IRepository,
   ISearchableRepository,
-} from "../../../domain/repository/repository-interface";
-import { SearchParams } from "../../../domain/repository/search-params";
-import { SearchResult } from "../../../domain/repository/search-result";
-import { ValueObject } from "../../../domain/value-object";
+} from '../../../domain/repository/repository-interface';
+import { SearchParams } from '../../../domain/repository/search-params';
+import { SearchResult } from '../../../domain/repository/search-result';
+import { ValueObject } from '../../../domain/value-object';
 
 export abstract class InMemoryRepository<
   E extends Entity,
-  EntityID extends ValueObject
+  EntityID extends ValueObject,
 > implements IRepository<E, EntityID>
 {
   items: E[] = [];
@@ -25,7 +25,7 @@ export abstract class InMemoryRepository<
 
   async update(entity: E): Promise<void> {
     const index = this.items.findIndex((item) =>
-      item.entity_id.equals(entity.entity_id)
+      item.entity_id.equals(entity.entity_id),
     );
     if (index === -1) {
       throw new EntityNotFoundError(entity.entity_id, this.getEntity());
@@ -35,7 +35,7 @@ export abstract class InMemoryRepository<
 
   async delete(entity_id: EntityID): Promise<void> {
     const index = this.items.findIndex((item) =>
-      item.entity_id.equals(entity_id)
+      item.entity_id.equals(entity_id),
     );
     if (index === -1) {
       throw new EntityNotFoundError(entity_id, this.getEntity());
@@ -62,21 +62,21 @@ export type ApplyFilterParams<E, Filter> = {
 
 export type ApplyPaginationParams<E> = {
   items: E[];
-  page: SearchParams["page"];
-  per_page: SearchParams["per_page"];
+  page: SearchParams['page'];
+  per_page: SearchParams['per_page'];
 };
 
 export type ApplySortParams<E> = {
   items: E[];
-  sort: SearchParams["sort"];
-  sort_dir: SearchParams["sort_dir"];
+  sort: SearchParams['sort'];
+  sort_dir: SearchParams['sort_dir'];
   custom_getter?: (sort: string, item: E) => any;
 };
 
 export abstract class InMemorySearchableRepository<
     E extends Entity,
     EntityID extends ValueObject,
-    Filter = string
+    Filter = string,
   >
   extends InMemoryRepository<E, EntityID>
   implements ISearchableRepository<E, EntityID, Filter>
@@ -109,7 +109,7 @@ export abstract class InMemorySearchableRepository<
   }
 
   protected abstract applyFilter(
-    params: ApplyFilterParams<E, Filter>
+    params: ApplyFilterParams<E, Filter>,
   ): Promise<E[]>;
 
   protected applyPagination(params: ApplyPaginationParams<E>): E[] {
@@ -135,11 +135,11 @@ export abstract class InMemorySearchableRepository<
         : b[sort as keyof E];
 
       if (aValue < bValue) {
-        return sort_dir === "asc" ? -1 : 1;
+        return sort_dir === 'asc' ? -1 : 1;
       }
 
       if (aValue > bValue) {
-        return sort_dir === "asc" ? 1 : -1;
+        return sort_dir === 'asc' ? 1 : -1;
       }
 
       return 0;

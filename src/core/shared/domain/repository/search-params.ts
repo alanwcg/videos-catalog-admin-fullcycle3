@@ -1,6 +1,6 @@
-import { ValueObject } from "../value-object";
+import { ValueObject } from '../value-object';
 
-export type SortDirection = "asc" | "desc";
+export type SortDirection = 'asc' | 'desc';
 
 export type SearchParamsConstructorProps<Filter = string> = {
   page?: number;
@@ -12,7 +12,7 @@ export type SearchParamsConstructorProps<Filter = string> = {
 
 export class SearchParams<Filter = string> extends ValueObject {
   toString(): string {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   protected _page: number;
   protected _per_page: number = 15;
@@ -67,7 +67,7 @@ export class SearchParams<Filter = string> extends ValueObject {
 
   private set sort(value: string | null) {
     this._sort =
-      value === null || value === undefined || value === "" ? null : `${value}`;
+      value === null || value === undefined || value === '' ? null : `${value}`;
   }
 
   get sort_dir(): SortDirection | null {
@@ -82,7 +82,7 @@ export class SearchParams<Filter = string> extends ValueObject {
 
     const sort_dir = `${value}`.toLowerCase();
     this._sort_dir =
-      sort_dir !== "asc" && sort_dir !== "desc" ? "asc" : sort_dir;
+      sort_dir !== 'asc' && sort_dir !== 'desc' ? 'asc' : sort_dir;
   }
 
   get filter(): Filter | null {
@@ -91,7 +91,7 @@ export class SearchParams<Filter = string> extends ValueObject {
 
   protected set filter(value: Filter | null) {
     this._filter =
-      value === null || value === undefined || (value as unknown) === ""
+      value === null || value === undefined || (value as unknown) === ''
         ? null
         : (`${value}` as any);
   }
